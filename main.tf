@@ -21,6 +21,17 @@ resource "aws_security_group" "this" {
     }
   }
 
+  dynamic "ingress" {
+    for_each = var.enable_monitoring_port ? [9100] : []
+    content {
+      description = "Node exporter (monitoring)"
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = [var.admin_cidr]
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
